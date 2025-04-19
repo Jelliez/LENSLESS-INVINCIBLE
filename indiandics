@@ -1,0 +1,207 @@
+-- Helper function to set text on the hotbar buttons
+local function setHotbarMoveText(moveNumber, moveName)
+    local player = game.Players.LocalPlayer
+    local hotbar = player.PlayerGui:FindFirstChild("Hotbar")
+    local backpack = hotbar:FindFirstChild("Backpack")
+    local hotbarFrame = backpack:FindFirstChild("Hotbar")
+    local baseButton = hotbarFrame:FindFirstChild(tostring(moveNumber)).Base
+    baseButton.ToolName.Text = moveName
+end
+
+-- Function to set all moves' names with custom names
+local moveNames = {"Bycycle Kick", "Divine Barrage", "AURA", "Nutcracker", "Teleport Tool"}  -- Added Teleport Tool as Move 5
+
+for i = 1, #moveNames do
+    setHotbarMoveText(i, moveNames[i])
+end
+
+-- Function to set ultimate name
+local function setUltimateName(ultimateName)
+    local player = game.Players.LocalPlayer
+    local textLabel = player.PlayerGui:FindFirstChild("ScreenGui")
+        :FindFirstChild("MagicHealth")
+        :FindFirstChild("TextLabel")
+    if textLabel then
+        textLabel.Text = ultimateName
+    end
+end
+setUltimateName("POWER OF ALLAH")
+
+-- Function to handle animation detection and replacement
+local function handleAnimationDetection(animIdsToStop, replacementAnimId, animSpeed)
+    local player = game.Players.LocalPlayer
+    local humanoid = player.Character:WaitForChild("Humanoid")
+
+    humanoid.AnimationPlayed:Connect(function(animationTrack)
+        local animId = tonumber(string.match(animationTrack.Animation.AnimationId, "%d+"))
+        
+        -- Check if the played animation matches any of the original animation IDs
+        for _, originalAnimId in ipairs(animIdsToStop) do
+            if animId == originalAnimId then
+                animationTrack:Stop()  -- Stop the original animation
+
+                -- Create and play the replacement animation
+                local replacementAnimation = Instance.new("Animation")
+                replacementAnimation.AnimationId = "rbxassetid://" .. replacementAnimId
+                local replacementTrack = humanoid:LoadAnimation(replacementAnimation)
+                replacementTrack:Play()
+
+                -- Adjust the speed of the replacement animation
+                replacementTrack:AdjustSpeed(animSpeed)
+
+                -- Apply particle emitter for move 1 (specific animation ID)
+                if originalAnimId == 10468665991 then  -- move 1's animation ID
+                    -- Wait for 0.4 seconds before activating the particle effect
+                    wait(0.4)
+
+                    -- Activate the particle effect for move 1
+                    local Test = game.ReplicatedStorage.Emotes.VFX.VfxMods.Boundless.vfx.upwind.upwind.Attachment
+                    local test = Test:Clone()
+                    test.Parent = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+
+                    -- Activate the ParticleEmitter
+                    for _, child in ipairs(test:GetChildren()) do
+                        if child:IsA("ParticleEmitter") then
+                            child:Emit(15)
+                            child.Enabled = true
+                        end
+                    end
+
+                    -- Disable particle effect after 0.5 seconds
+                    wait(0.5)
+                    for _, child in ipairs(test:GetChildren()) do
+                        if child:IsA("ParticleEmitter") then
+                            child.Enabled = false
+                        end
+                    end
+                end
+
+                -- Apply particle emitter for move 3 (specific animation ID)
+                if originalAnimId == 10471336737 then  -- move 3's animation ID
+                    -- Wait for 0.4 seconds before activating the particle effect
+                    wait(0.4)
+
+                    -- Activate the particle effect for move 3
+                    local Test = game.ReplicatedStorage.Resources.Cannon.Maybe.Maybe.wind
+                    local test = Test:Clone()
+                    test.Parent = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+
+                    -- Activate the ParticleEmitter
+                    for _, child in ipairs(test:GetChildren()) do
+                        if child:IsA("ParticleEmitter") then
+                            child:Emit(15)
+                            child.Enabled = true
+                        end
+                    end
+
+                    -- Disable particle effect after 0.5 seconds
+                    wait(0.5)
+                    for _, child in ipairs(test:GetChildren()) do
+                        if child:IsA("ParticleEmitter") then
+                            child.Enabled = false
+                        end
+                    end
+                end
+
+                -- Apply particle emitter for move 4 (specific animation ID)
+                if originalAnimId == 12510170988 then  -- move 4's animation ID
+                    -- Wait for 0.4 seconds before activating the particle effect
+                    wait(0.4)
+
+                    -- Activate the particle effect for move 4
+                    local Test = game.ReplicatedStorage.Emotes.VFX.VfxMods.Boundless.vfx.EndSmoke.EndSmoke.Dust
+                    local test = Test:Clone()
+                    test.Parent = game.Players.LocalPlayer.Character:WaitForChild("HumanoidRootPart")
+
+                    -- Activate the ParticleEmitter
+                    for _, child in ipairs(test:GetChildren()) do
+                        if child:IsA("ParticleEmitter") then
+                            child:Emit(15)
+                            child.Enabled = true
+                        end
+                    end
+
+                    -- Disable particle effect after 0.5 seconds
+                    wait(0.5)
+                    for _, child in ipairs(test:GetChildren()) do
+                        if child:IsA("ParticleEmitter") then
+                            child.Enabled = false
+                        end
+                    end
+                end
+
+                -- Trigger the "I'll end you" chat message for ultimate move
+                if originalAnimId == 12447707844 then  -- ultimate's animation ID
+                    -- Make the character say "I'll end you" in chat
+                    game:GetService("ReplicatedStorage").DefaultChatSystemChatEvents.SayMessageRequest:FireServer("I'll Kill You.", "All")
+                end
+
+                break
+            end
+        end
+    end)
+end
+
+-- Applying animation replacements for moves
+handleAnimationDetection({10468665991}, 17838619895, 1.6)  -- move 1
+handleAnimationDetection({10466974800}, 13560306510, 2.5)  -- move 2
+handleAnimationDetection({10471336737}, 16552234590, 1.15)  -- move 3
+handleAnimationDetection({12510170988}, 12684390285, 2.3)  -- move 4
+handleAnimationDetection({10469493270}, 13491635433, 1.0)  -- m1
+handleAnimationDetection({10469630950}, 13532604085, 1.0)  -- m2
+handleAnimationDetection({10469639222}, 17889290569, 1.0)  -- m3
+handleAnimationDetection({10469643643}, 17889471098, 1.0)  -- m4
+handleAnimationDetection({12447707844}, 17140902079, 1.0)  -- ult
+
+-- Function to handle BodyVelocity adjustments
+local function onBodyVelocityAdded(bodyVelocity)
+    if bodyVelocity:IsA("BodyVelocity") then
+        bodyVelocity.Velocity = Vector3.new(bodyVelocity.Velocity.X, 0, bodyVelocity.Velocity.Z)
+    end
+end
+
+-- Monitor existing and new BodyVelocity instances
+local character = game.Players.LocalPlayer.Character
+for _, descendant in pairs(character:GetDescendants()) do
+    onBodyVelocityAdded(descendant)
+end
+
+character.DescendantAdded:Connect(onBodyVelocityAdded)
+
+-- Handle new character creation
+game.Players.LocalPlayer.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    for _, descendant in pairs(character:GetDescendants()) do
+        onBodyVelocityAdded(descendant)
+    end
+end)
+
+-- Adding the teleport tool
+local mouse = game.Players.LocalPlayer:GetMouse()
+
+-- Create a new tool for teleportation
+local tool = Instance.new("Tool")
+tool.RequiresHandle = false
+tool.Name = "PHANTOM PHASE"
+
+-- When the tool is activated, teleport the player to the mouse position with an offset on the Y-axis
+tool.Activated:Connect(function()
+    -- Play animation when teleport tool is used
+    local player = game.Players.LocalPlayer
+    local humanoid = player.Character:WaitForChild("Humanoid")
+
+    local teleportAnimation = Instance.new("Animation")
+    teleportAnimation.AnimationId = "rbxassetid://15957361339"
+    local animTrack = humanoid:LoadAnimation(teleportAnimation)
+
+    -- Start playing the teleport animation
+    animTrack:Play()
+
+    -- Teleport the player immediately (without waiting for the animation to finish)
+    local pos = mouse.Hit + Vector3.new(0, 2.5, 0)  -- Add vertical offset
+    pos = CFrame.new(pos.X, pos.Y, pos.Z)  -- Create a new CFrame with the new position
+    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = pos  -- Teleport to the new position
+end)
+
+-- Parent the teleport tool to the player's backpack
+tool.Parent = game.Players.LocalPlayer.Backpack
